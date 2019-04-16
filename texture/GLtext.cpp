@@ -5,6 +5,7 @@
 #include <math.h>
 #include <string.h>
 #include <malloc.h>
+#include "math3d.h"
 //#include "bmp.h"
 
 #include "glut.h"
@@ -25,6 +26,13 @@ GLuint texWall;
 //animation parameter
 int t_prev;
 double phi, delta;
+M3DMatrix44f shadowMat;
+M3DVector4f vPlaneEquation;
+M3DVector4d planeEq;
+M3DVector3f points[3] = { { -30.0f, 3.0f, -20.0f },
+{ -30.0f, 3.0f, 20.0f},
+{ 40.0f,3.0f, 20.0f  } };
+const M3DVector3f vLightPos = { 125.0f, 100.0f, 100.0f};
 
 // 函数power_of_two用于判断一个整数是不是2的整数次幂
 int power_of_two(int n)
@@ -173,7 +181,7 @@ void draw_instrument(void)
 
 void setLight(void)
 {
-	static const GLfloat light_position[] = { 125.0f, 100.0f, 100.0f, 0.0f };
+	static const GLfloat light_position[] = { 125.0f, 100.0f, 100.0f, 1.0f };
 	static const GLfloat light_ambient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
 	static const GLfloat light_diffuse[] = { 0.3f, 0.3f, 0.3f, 1.0f };
 	static const GLfloat light_specular[] = { 0.8f, 0.8f, 0.8f, 1.0f };
@@ -248,19 +256,38 @@ void draw_bird(void)
 	//glColor3f(0, 0, 1.0);
 	draw_bird_head();
 	glPopMatrix();
+	glPushMatrix();
 	glTranslatef(0, 0, -50);
 	glRotated(-90, 0, 0, 1);
 	glutSolidCone(10, 20, 10, 10);
+	glPopMatrix();
 }
 
 void setFog(const GLfloat atmoColor[4])
 {
 	glEnable(GL_FOG);
 	glFogfv(GL_FOG_COLOR, atmoColor);
-	glFogi(GL_FOG_MODE, GL_EXP2);
-	glFogf(GL_FOG_DENSITY, 0.05f);
-	glFogf(GL_FOG_START, 5.0f);
-	glFogf(GL_FOG_END, 40.0f);
+	glFogi(GL_FOG_MODE, GL_LINEAR);
+	//glFogf(GL_FOG_DENSITY, 0.05f);
+	glFogf(GL_FOG_START, 1.0f);
+	glFogf(GL_FOG_END, 300.0f);
+}
+
+void setShadow(void)
+{
+	m3dGetPlaneEquation(vPlaneEquation, points[0], points[1], points[2]);
+	m3dMakePlanarShadowMatrix(shadowMat, vPlaneEquation, vLightPos);
+	glMatrixMode(GL_MODELVIEW);
+	//glDisable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);
+	glPushMatrix();
+	glMultMatrixf((GLfloat*)shadowMat);
+	glTranslatef(-50 + phi, 13, 0);
+	glColor3f(0.0, 0.0, 0.0);
+	glutSolidSphere(10, 10, 10);
+	glEnable(GL_LIGHTING);
+	glPopMatrix();
+	
 }
 
 void animate(void)
@@ -293,7 +320,7 @@ void drawscene(void)
 	const static GLfloat white_color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	const static GLfloat ao_color[] = { 0.7f, 0.9f, 1.0f, 0.8f };
 	// set fogcolor
-	GLfloat atmoColor[4] = { 1.0, 0.5, 0.5, 1.0 };
+	GLfloat atmoColor[4] = { 1.0, 1.0, 1.0, 1.0 };
 	// Setup perspective projection and the rotation
 	GLint viewport[4];
 	glGetIntegerv(GL_VIEWPORT, viewport);
@@ -305,7 +332,7 @@ void drawscene(void)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(100, 30, 100, 0, 0, 0, 0, 1, 0);
+	gluLookAt(75, 60, 30, 0, 0, 0, 0, 1, 0);
 	glMultMatrixf(gsrc_getmo());
 
 	// Clear The Screen
@@ -325,12 +352,11 @@ void drawscene(void)
 
 	// SetLight
 	setLight();
-	setFog(atmoColor);
+	//setFog(atmoColor);
 	glDepthMask(GL_FALSE);// Z buffer code ends */
 
 	glClearColor(0.764, 0.854, 1.0, 1.0);	// Set display-window color to white.
 	glClear(GL_COLOR_BUFFER_BIT);		// Clear display window.
-	glDisable(GL_FOG);
 	//Draw the base
 
 
@@ -341,14 +367,21 @@ void drawscene(void)
 	glDisable(GL_TEXTURE_2D);
 	//draw_instrument();
 	setMatirial(white_color, 30);
-	glTranslatef(-50+phi, 10, 0);
+	glTranslatef(-50+phi, 13, 0);
 	glutSolidSphere(10, 10, 10);
 	glPopMatrix();
+	glPushMatrix();
 	glScalef(0.2, 0.2, 0.2);
 	glTranslatef(70, 90, 90);
 	setMatirial(ao_color, 40);
 	draw_bird();
-	
+	glPopMatrix();
+	//setMatirial(dark_color, 40);
+	glPushMatrix();
+	glDisable(GL_LIGHTING);
+	glColor3f(0, 0, 0);
+	setShadow();
+	glPopMatrix();
 	glutSwapBuffers();
 }
 
@@ -360,7 +393,7 @@ int main(int argc, char** argv)
 	glutInitWindowPosition(WIN_POSX, WIN_POSY);         // Set display-window position at (WIN_POSX, WIN_POSY) 
 														  // where (0, 0) is top left corner of monitor screen
 	glutInitWindowSize(WIN_WIDTH, WIN_HEIGHT);		  // Set display-window width and height.
-	glutCreateWindow("Golf");					  // Create display window.
+	glutCreateWindow("Bird and Golf");					  // Create display window.
 
 	// set animation
 	glutIdleFunc(animate);

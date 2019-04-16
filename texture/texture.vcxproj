@@ -144,10 +144,12 @@
   <ItemGroup>
     <ClInclude Include="glut.h" />
     <ClInclude Include="gsrc.h" />
+    <ClInclude Include="math3d.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GLtext.cpp" />
     <ClCompile Include="gsrc.cpp" />
+    <ClCompile Include="math3d.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
