@@ -29,10 +29,10 @@
     <ClCompile Include="gsrc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="GLtext.cpp">
+    <ClCompile Include="math3d.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="math3d.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
