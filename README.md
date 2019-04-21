@@ -1,4 +1,2 @@
-# Hitomi
-EE5808 Computer Graphics Project  
-  
-An individual game project. Coming Soon.
+# Golf and Bird
+A small glut based opengl animation. Run on windows visual studio 2015 environment
