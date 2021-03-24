@@ -1,5 +1,7 @@
-﻿  main.cpp
-c:\users\theodore\documents\visual studio 2015\projects\55364124musen\texture\main.cpp(44): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(205): note: 参见“fopen”的声明
-  texture.vcxproj -> C:\Users\theodore\Documents\Visual Studio 2015\Projects\55364124MUSEN\Debug\texture.exe
-  texture.vcxproj -> C:\Users\theodore\Documents\Visual Studio 2015\Projects\55364124MUSEN\Debug\texture.pdb (Full PDB)
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(491,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (texture.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  main.cpp
+C:\Users\mousen\Documents\GitHub\Golf-and-Bird\texture\main.cpp(42,16): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  gsrc.cpp
+  math3d.cpp
+  Generating Code...
+  texture.vcxproj -> C:\Users\mousen\Documents\GitHub\Golf-and-Bird\Debug\Golf-And-Bird.exe

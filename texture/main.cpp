@@ -32,7 +32,7 @@ M3DVector3f points[3] = { { -30.0f, 3.0f, -20.0f },
 const M3DVector3f vLightPos = { 125.0f, 100.0f, 100.0f};
 
 
-GLuint load_image_as_texture(const char* file_name)
+GLuint loadImageAsTexture(const char* file_name)
 {
 	GLint width, height, total_bytes;
 	GLubyte* pixels = 0;
@@ -101,7 +101,7 @@ GLuint load_image_as_texture(const char* file_name)
 }
 
 // set a plane as ground
-void draw_ground(void)
+void drawGround(void)
 {
 	
 	glPushMatrix();
@@ -117,7 +117,7 @@ void draw_ground(void)
 	glPopMatrix();
 }
 
-void draw_instrument(void)
+void drawInstrument(void)
 {
 	glPushMatrix();
 	glScalef(0.5, 10, 0.5);
@@ -155,7 +155,7 @@ void setMatirial(const GLfloat mat_diffuse[4], GLfloat mat_shininess)
 	glMaterialf(GL_FRONT, GL_SHININESS, mat_shininess);
 }
 
-void draw_bird_body(void)
+void drawBirdBody(void)
 {
 	glPushMatrix();
 	glScalef(1, 1, 5);
@@ -163,7 +163,7 @@ void draw_bird_body(void)
 	glPopMatrix();
 }
 
-void draw_bird_wing(void)
+void drawBirdWing(void)
 {
 	glPushMatrix();
 	glScalef(1, 0.1, 1);
@@ -171,7 +171,7 @@ void draw_bird_wing(void)
 	glPopMatrix();
 }
 
-void draw_bird_head()
+void drawBirdHead()
 {
 	glPushMatrix();
 	glScalef(2, 2, 5);
@@ -182,27 +182,24 @@ void draw_bird_head()
 	glPopMatrix();
 }
 
-void draw_bird(void)
+void drawBird(void)
 {
 	glPushMatrix();
-	//glColor3f(0.0, 0.0, 0.0);
-	draw_bird_body();
-	//glColor3f(1.0, 0.3, 0.4);
+	drawBirdBody();
 	glRotatef(delta, 0, 0, 1);
 	glTranslatef(60, 0, 0);
-	draw_bird_wing();
+	drawBirdWing();
 	glPopMatrix();
 	glPushMatrix();
 	glScalef(-1, 1, 1);
 	glRotatef(30+delta, 0, 0, 1);
 	glTranslatef(60, 0, 0);
-	draw_bird_wing();
+	drawBirdWing();
 	glPopMatrix();
 	glPushMatrix();
 	glRotatef(-30, 1, 0, 0);
 	glTranslatef(0, -10, 55);
-	//glColor3f(0, 0, 1.0);
-	draw_bird_head();
+	drawBirdHead();
 	glPopMatrix();
 	glPushMatrix();
 	glTranslatef(0, 0, -50);
@@ -222,7 +219,7 @@ void setFog(const GLfloat atmoColor[4])
 	glFogf(GL_FOG_END, 300.0f);
 }
 
-//set shadoweffect by library
+//set shadow effect by library
 void setShadow(void)
 {
 	m3dGetPlaneEquation(vPlaneEquation, points[0], points[1], points[2]);
@@ -271,11 +268,11 @@ void setShadowSlide(void)
 }
 
 //animation function to modify parameters
-void animate(void)
+void animationMain()
 // this animation function will translate the ball with 90 distance
 {
 	double	t;
-	double distance = 90.0;                  // ditance
+	double distance = 90.0;                  // distance
 	double swing_angle = 60;
 	double swing_time = 10000.0;				 // 5000 ms
 
@@ -295,13 +292,13 @@ void animate(void)
 	glutPostRedisplay();
 }
 
-//main dispaly function
-void drawscene(void)
+//main display function
+void drawScene()
 {
 	const static GLfloat dark_color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	const static GLfloat white_color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	const static GLfloat ao_color[] = { 0.7f, 0.9f, 1.0f, 0.8f };
-	// set fogcolor as white
+	// set fog color as white
 	GLfloat atmoColor[4] = { 1.0, 1.0, 1.0, 1.0 };
 	// Setup perspective projection and the rotation
 	GLint viewport[4];
@@ -330,7 +327,7 @@ void drawscene(void)
 	glEnable(GL_NORMALIZE);   // normalize normals
 	glEnable(GL_TEXTURE_2D);			// texture
 
-	texGrassland = load_image_as_texture("grassland.bmp");
+	texGrassland = loadImageAsTexture("grassland.bmp");
 
 	// SetLight
 	setLight();
@@ -345,7 +342,7 @@ void drawscene(void)
 	glPushMatrix();
 	setMatirial(dark_color, 30.0);
 	glDepthMask(GL_TRUE);
-	draw_ground();
+	drawGround();
 	glDisable(GL_TEXTURE_2D);
 	//draw_instrument();
 	setMatirial(white_color, 30);
@@ -356,7 +353,7 @@ void drawscene(void)
 	glScalef(0.2, 0.2, 0.2);
 	glTranslatef(70, 90, 90);
 	setMatirial(ao_color, 40);
-	draw_bird();
+	drawBird();
 	glPopMatrix();
 	//setMatirial(dark_color, 40);
 	glPushMatrix();
@@ -378,13 +375,13 @@ int main(int argc, char** argv)
 	glutCreateWindow("Bird and Golf");					  // Create display window.
 
 	// set animation
-	glutIdleFunc(animate);
+	glutIdleFunc(animationMain);
 
 	//mouse function
 	glutMouseFunc(gsrc_mousebutton);
 	glutMotionFunc(gsrc_mousemove);
 
-	glutDisplayFunc(drawscene);   // put everything you wish to draw in drawscene
+	glutDisplayFunc(drawScene);   // put everything you wish to draw in drawscene
 
 	glutMainLoop();
 }
